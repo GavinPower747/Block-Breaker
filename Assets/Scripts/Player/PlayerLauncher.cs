@@ -14,24 +14,25 @@ namespace Assets.Scripts.Player
                 return BallGO != null;
             }
         }
-
-        private Rigidbody2D _ballRidgedBody;
-        private PlayerMotor _motor;
+        
+        private Rigidbody2D _paddleRigidBody;
 
         void Start()
         {
-            _ballRidgedBody = BallGO.GetComponent<Rigidbody2D>();
-            _motor = this.GetComponent<PlayerMotor>();
+            _paddleRigidBody = this.GetComponent<Rigidbody2D>();
         }
 
         public void LaunchBall()
         {
             if(HasBall)
             {
-                var velocity = _motor.Velocity;
+                var velocity = _paddleRigidBody.velocity;
+                var ballPhysics = BallGO.GetComponent<Rigidbody2D>();
 
                 BallGO.transform.SetParent(null);
-                _ballRidgedBody.AddForce(new Vector2(velocity.x, LaunchForce));
+                ballPhysics.simulated = true;
+                ballPhysics.AddForce(new Vector2(velocity.x, LaunchForce));
+
                 BallGO = null;
             }
         }
