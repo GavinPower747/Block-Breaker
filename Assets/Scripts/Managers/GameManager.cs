@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Player;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.Managers
@@ -7,13 +8,16 @@ namespace Assets.Scripts.Managers
     {
         public static GameManager Instance;
         public GameObject MainCameraGO;
+        public GameObject PaddleGO;
         public int Lives = 3;
 
         private Animator _cameraAnimator;
+        private PlayerLauncher _playerLauncher;
 
         void Start()
         {
             _cameraAnimator = MainCameraGO.GetComponent<Animator>();
+            _playerLauncher = PaddleGO.GetComponent<PlayerLauncher>();
 
             UIManager.Instance.InitUI(Lives);
     
@@ -32,9 +36,10 @@ namespace Assets.Scripts.Managers
             SceneManager.LoadScene(sceneIndex);
         }
 
-        public bool PlayerDied()
+        public bool BallLost()
         {
-            Lives--;
+            if(Lives > 0)
+                Lives--;
 
             UIManager.Instance.UpdateLivesDisplay(Lives);
 
@@ -42,6 +47,8 @@ namespace Assets.Scripts.Managers
 
             if (isGameOver)
                 GameOver();
+            else
+                _playerLauncher.SpawnNewBall();
 
             return isGameOver;
         }

@@ -4,18 +4,12 @@ namespace Assets.Scripts.Player
 {
     public class PlayerLauncher : MonoBehaviour
     {
-        public GameObject BallGO;
         public int LaunchForce = 200;
 
-        public bool HasBall
-        {
-            get
-            {
-                return BallGO != null;
-            }
-        }
+        public GameObject BallPrefab;
         
         private Rigidbody2D _paddleRigidBody;
+        private const string BallName = "Ball";
 
         void Start()
         {
@@ -24,17 +18,30 @@ namespace Assets.Scripts.Player
 
         public void LaunchBall()
         {
-            if(HasBall)
+            var ball = transform.Find(BallName);
+
+            if(ball != null)
             {
                 var velocity = _paddleRigidBody.velocity;
-                var ballPhysics = BallGO.GetComponent<Rigidbody2D>();
+                var ballPhysics = ball.GetComponent<Rigidbody2D>();
 
-                BallGO.transform.SetParent(null);
+                var xForce = 
+                    Mathf.Abs(velocity.x) > 0 
+                    ? (Mathf.Abs(velocity.x) + LaunchForce) * Mathf.Sign(velocity.x) 
+                    : 0;
+
+                ball.transform.SetParent(null);
                 ballPhysics.simulated = true;
-                ballPhysics.AddForce(new Vector2(velocity.x, LaunchForce));
-
-                BallGO = null;
+                ballPhysics.AddForce(new Vector2(xForce, LaunchForce));
             }
         }
+
+        public void SpawnNewBall()
+        {
+            var newBall = Instantiate(BallPrefab, transform.position, transform.rotation, transform);
+            newBall.transform.localPosition = new Vector3(0, 1.4f, 0);
+            newBall.name = BallName;
+        }
+
     }
 }

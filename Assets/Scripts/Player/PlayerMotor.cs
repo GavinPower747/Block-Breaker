@@ -4,18 +4,19 @@ namespace Assets.Scripts.Player
 {
     public class PlayerMotor : MonoBehaviour
     {
-
-        [SerializeField] private float _maxSpeed;
-        [SerializeField] private Rigidbody2D _rigidBody;
+        public int MaxSpeed = 10;
+        public float InputModifier = 0;
+        
+        private Rigidbody2D _rigidBody;
 
         void Start()
         {
             _rigidBody = GetComponent<Rigidbody2D>();
         }
 
-        public void MovePaddle(float move)
+        void Update()
         {
-            _rigidBody.velocity = new Vector2(move * _maxSpeed, 0);
+            _rigidBody.velocity = new Vector2(InputModifier * MaxSpeed, 0);
         }
     }
 }
